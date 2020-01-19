@@ -3,7 +3,7 @@ import requests
 
 session = requests.session()
 post_url = "https://acghgame.com/member.php?mod=logging&action=login"
-post_data = {"username":"wrmyx@wzd--", "password":"wrmyx@wzd---123"}
+post_data = {"username":"****************", "password":"*********"}
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                  'AppleWebKit/537.36 (KHTML, like Gecko) '
