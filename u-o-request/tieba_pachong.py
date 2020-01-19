@@ -21,7 +21,7 @@ class TiebaSpider:
         self.tieba_name = tieba_name
         self.url = 'https://tieba.baidu.com/f?kw=' + tieba_name + '&ie=utf-8&pn={}'
         self.headers = {
-            'ser-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                          'AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/79''.0.3945.88 Safari/537.36'
         }
@@ -31,7 +31,7 @@ class TiebaSpider:
         # for i in range(1001):
         #     url_list.append(self.url.format(i*50))
         # return url_list
-        return [self.url_list.format(i * 50) for i in range(1000)]
+        return [self.url.format(i * 50) for i in range(1000)]
 
     def parse_url(self, url):  # send requests, get response
         print(url)
