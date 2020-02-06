@@ -7,45 +7,15 @@ import json
 import os
 
 
-# url = "https://tieba.baidu.com/p/6459196128"
-# re_str = r'href="(/p/\d*)" title="(.*?)"'
-# index_netx_page_re_str = r'<a href="(.*?)" class="next pagination-item " >'
-
-# headers = {
-#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-#                   "AppleWebKit/537.36 (KHTML, like Gecko) "
-#                   "Chrome/79.0.3945.88 Safari/537.36 "
-#         }
-
-# r = requests.get(url, headers=headers)
-# r_str = r.content.decode()
-
-# pic_html = etree.HTML(r_str)
-# pic_url = pic_html.xpath(r"//div[@class='left_section']/div[@id='j_p_postlist']/div/@data-field")
-# next_pic_num = pic_html.xpath("//a[text()='下一页']/@href")
-
-# tiezi_url_num = re.findall(re_str, r_str)
-# next_page_url = re.findall(index_netx_page_re_str, r_str)
-
-# pic_id = re.findall('/(.*?).jpg', pic_url[0]['content']['content'])
-# str1 = json.loads(pic_url[15])["content"]["content"]
-# print(re.findall(r'src="(.*?)"', str1))
-# print(next_pic_num)
-
-# print(tiezi_url_num)
-# print(next_page_url)
-# with open("onepunchmancomic.html", "w", encoding="utf-8") as f:
-#     f.write(r_str)
-
-
 class OnePunchManSpider:
-    def __init__(self):
+    def __init__(self, tieba_name):
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                           "AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/79.0.3945.88 Safari/537.36 "
         }
-        self.boutique_area_url = "https://tieba.baidu.com/f?kw=%E4%B8%80%E5%87%BB%E7%94%B7&ie=utf-8&tab=good&cid=1&pn=0"
+        self.tieba_name = tieba_name
+        self.boutique_area_url = "https://tieba.baidu.com/f?kw={}&ie=utf-8&tab=good&cid=1&pn=0".format(tieba_name)
         self.post_url = "https://tieba.baidu.com"
         self.re_post_url = re.compile(r'href="(/p/\d*)" title="(.*?)"')  # 获取帖子url的正则
         self.re_pic_url = re.compile(r'src="(.*?)"')
@@ -141,46 +111,27 @@ class OnePunchManSpider:
         while url:
             response = requests.get(boutique_area_page_url, headers=self.headers)
             response_str = response.content.decode()
-            post_list = self.get_boutique_post_url(response_str)
-            need_post_list = self.analyze_post_list(post_list)
-            post_url_dict = self.get_post_url(need_post_list)
+            post_list = self.get_boutique_post_url(response_str)  # 获取每一页的帖子的标题和url地址
+            need_post_list = self.analyze_post_list(post_list)  # 简陋的筛选出想要的帖子
+            post_url_dict = self.get_post_url(need_post_list)  # 加工成{“标题”：“url”}形式的字典
 
             for i in post_url_dict:
                 print(i)
-                save_path = "./onepunchman/" + i
-                if not os.path.exists(save_path):
+                save_path = "./" + self.tieba_name + "/" + i
+                if not os.path.exists(save_path): # 判断目录是否存在
                     self.mkdir(save_path)  # 创建目录
-                    pic_url_list = self.get_pic_url_list(post_url_dict[i])
+                    pic_url_list = self.get_pic_url_list(post_url_dict[i]) # 获取图片url列表
                     print(len(pic_url_list))
                     print(pic_url_list)
-                    self.save_pic(pic_url_list, save_path)
+                    self.save_pic(pic_url_list, save_path)  # 保存图片url列表
 
-            url = self.get_next_page_num(response_str)
+            url = self.get_next_page_num(response_str)  # 获取下一页url地址
             if url:
                 boutique_area_page_url = 'https:' + url
             else:
                 break
-        # pic_url_list_temp = self.get_pic_url_list('https://tieba.baidu.com/p/6391340934?see_lz=1')
-        # print(pic_url_list_temp)
-        # print(len(pic_url_list_temp))
-        # 2. 请求帖子url地址，从响应中获取图片url地址
-        # pic_response = requests.get(boutique_post_url, headers=self.headers)
-        # pic_response_str = pic_response.content.decode()
-
-        # pic_url_list = self.get_pic_url(pic_response_str)
-        # print(pic_url_list)
-        # next_pic_num = self.get_next_pic_page_num(pic_response_str)
-        # print(next_pic_num)
-        # print(pic_url_list)
-        # 3.
-        # for pic_url in pic_url_list:
-        #     pic_response = requests.get(pic_url, headers=self.headers)
-        #     self.save_pic(pic_response)
-        # 4. 保存图片
-        # 5. 帖子的下一页内容
-        # 6. 精品区的下一页内容
 
 
 if __name__ == '__main__':
-    onepunchmanspider = OnePunchManSpider()
+    onepunchmanspider = OnePunchManSpider("一击男")
     onepunchmanspider.run()
