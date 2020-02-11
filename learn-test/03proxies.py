@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 import requests
 
-proxies = {'http': 'http://114.226.244.141:9999'}
+proxies = {'http': 'http://58.52.201.117:8080'}
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                  'AppleWebKit/537.36 (KHTML, like Gecko) '

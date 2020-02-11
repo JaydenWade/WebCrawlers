@@ -5,6 +5,7 @@ from lxml import etree
 import re
 import json
 import os
+import time
 
 
 class OnePunchManSpider:
@@ -14,6 +15,7 @@ class OnePunchManSpider:
                           "AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/79.0.3945.88 Safari/537.36 "
         }
+        self.proxies = {'http': 'http://58.52.201.117:8080'}
         self.tieba_name = tieba_name
         self.boutique_area_url = "https://tieba.baidu.com/f?kw={}&ie=utf-8&tab=good&cid=1&pn=0".format(tieba_name)
         self.post_url = "https://tieba.baidu.com"
@@ -51,7 +53,7 @@ class OnePunchManSpider:
     def save_pic(self, pic_url_list, path):
 
         for i in pic_url_list:
-            pic_name = path + '/' + str(pic_url_list.index(i))
+            pic_name = path + '/' + str(pic_url_list.index(i)) + '.png'
             pic_response = requests.get(i, headers=self.headers)
             with open(pic_name, "wb") as f:
                 f.write(pic_response.content)
@@ -118,9 +120,9 @@ class OnePunchManSpider:
             for i in post_url_dict:
                 print(i)
                 save_path = "./" + self.tieba_name + "/" + i
-                if not os.path.exists(save_path): # 判断目录是否存在
+                if not os.path.exists(save_path):  # 判断目录是否存在
                     self.mkdir(save_path)  # 创建目录
-                    pic_url_list = self.get_pic_url_list(post_url_dict[i]) # 获取图片url列表
+                    pic_url_list = self.get_pic_url_list(post_url_dict[i])  # 获取图片url列表
                     print(len(pic_url_list))
                     print(pic_url_list)
                     self.save_pic(pic_url_list, save_path)  # 保存图片url列表
